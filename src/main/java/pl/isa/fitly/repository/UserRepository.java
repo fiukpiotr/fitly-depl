@@ -7,8 +7,11 @@ import org.springframework.web.bind.annotation.GetMapping;
 import pl.isa.fitly.model.ContactInfo;
 import pl.isa.fitly.model.UserData;
 
+import java.io.InputStream;
+import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.security.Principal;
 import java.util.ArrayList;
 import java.util.List;
@@ -66,7 +69,7 @@ public class UserRepository {
         return usersData;
     }
 
-    private List<UserData> readUsers() {
+/*    private List<UserData> readUsers() {
         ObjectMapper objectMapper = new ObjectMapper();
         Path pathJson = Path.of("fitly-depl", "src", "main", "resources", "UserData.json");
         TypeReference<List<UserData>> typeReference = new TypeReference<>() {
@@ -77,12 +80,33 @@ public class UserRepository {
             System.out.println(e.getMessage() + " - " + e);
         }
         return new ArrayList<>();
+    }*/
+    private List<UserData> readUsers() {
+        ObjectMapper objectMapper = new ObjectMapper();
+        TypeReference<List<UserData>> typeReference = new TypeReference<>() {
+        };
+        try {
+            InputStream inputStream = getClass().getClassLoader().getResourceAsStream("UserData.json");
+            if (inputStream == null) {
+                System.out.println("UserData.json file not found.");
+                return new ArrayList<>();
+            }
+            return objectMapper.readValue(inputStream, typeReference);
+        } catch (Exception e) {
+            System.out.println(e.getMessage() + " - " + e);
+        }
+        return new ArrayList<>();
     }
 
     private formError saveUsersData() {
         ObjectMapper objectMapper = new ObjectMapper();
-        Path pathJson = Path.of("fitly-depl", "src", "main", "resources", "UserData.json");
         try {
+            URL resourceUrl = getClass().getClassLoader().getResource("UserData.json");
+            if (resourceUrl == null) {
+                System.out.println("UserData.json file not found.");
+                return formError.WRITE_ERROR;
+            }
+            Path pathJson = Paths.get(resourceUrl.toURI());
             String json = objectMapper
                     .writerWithDefaultPrettyPrinter()
                     .writeValueAsString(usersData);
@@ -93,6 +117,7 @@ public class UserRepository {
             return formError.WRITE_ERROR;
         }
     }
+
 
     public UserData getCurrentUser() {
         return currentUser;
@@ -144,8 +169,13 @@ public class UserRepository {
 
     private void saveUsersData(List<UserData> updatedUsers) {
         ObjectMapper objectMapper = new ObjectMapper();
-        Path pathJson = Path.of("fitly-depl", "src", "main", "resources", "UserData.json");
         try {
+            URL resourceUrl = getClass().getClassLoader().getResource("UserData.json");
+            if (resourceUrl == null) {
+                System.out.println("Plik UserData.json nie został znaleziony.");
+                return;
+            }
+            Path pathJson = Paths.get(resourceUrl.toURI());
             String json = objectMapper
                     .writerWithDefaultPrettyPrinter()
                     .writeValueAsString(updatedUsers);
@@ -154,6 +184,7 @@ public class UserRepository {
             System.out.println(e.getMessage() + " - " + e);
         }
     }
+
 
     public formError addChatRoom(String email, String chatRoomId) {
         UserData user = getUserByEmail(email);
