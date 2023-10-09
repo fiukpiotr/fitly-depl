@@ -6,7 +6,3 @@ FROM openjdk:17.0.1-jdk-slim
 COPY --from=build /target/fitly-depl-0.0.1-SNAPSHOT.jar fitly-depl.jar
 EXPOSE 8080
 ENTRYPOINT ["java","-jar","fitly-depl.jar"]
-
-LABEL authors="piotr"
-
-ENTRYPOINT ["top", "-b"]
