@@ -68,7 +68,7 @@ public class UserRepository {
 
     private List<UserData> readUsers() {
         ObjectMapper objectMapper = new ObjectMapper();
-        Path pathJson = Path.of( "src", "main", "resources", "UserData.json");
+        Path pathJson = Path.of("fitly-depl", "src", "main", "resources", "UserData.json");
         TypeReference<List<UserData>> typeReference = new TypeReference<>() {
         };
         try {
@@ -81,7 +81,7 @@ public class UserRepository {
 
     private formError saveUsersData() {
         ObjectMapper objectMapper = new ObjectMapper();
-        Path pathJson = Path.of( "src", "main", "resources", "UserData.json");
+        Path pathJson = Path.of("fitly-depl", "src", "main", "resources", "UserData.json");
         try {
             String json = objectMapper
                     .writerWithDefaultPrettyPrinter()
@@ -144,7 +144,7 @@ public class UserRepository {
 
     private void saveUsersData(List<UserData> updatedUsers) {
         ObjectMapper objectMapper = new ObjectMapper();
-        Path pathJson = Path.of( "src", "main", "resources", "UserData.json");
+        Path pathJson = Path.of("fitly-depl", "src", "main", "resources", "UserData.json");
         try {
             String json = objectMapper
                     .writerWithDefaultPrettyPrinter()
